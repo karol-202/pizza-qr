@@ -59,7 +59,7 @@ private fun Application.routing() = routing {
 	route("api/token") {
 		get("{token}") {
 			val token = call.parameters["token"] ?: return@get badRequest()
-			tokenService.isTokenActive(token)?.let { ok(it) } ?: notFound()
+			tokenService.useToken(token)?.let { ok(it) } ?: notFound()
 		}
 		post {
 			val token = call.receive<Token>()
