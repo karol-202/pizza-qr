@@ -5,4 +5,6 @@ import pl.grinchscode.pizzaqr.model.Token
 interface TokenDao
 {
 	suspend fun findToken(token: String): Token?
+
+	suspend fun insertToken(token: Token): Boolean
 }
