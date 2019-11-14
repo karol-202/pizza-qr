@@ -32,3 +32,7 @@ compileTestKotlin {
 shadowJar {
     manifest.attributes 'Main-Class': application.mainClassName
 }
+
+task stage {
+    dependsOn clean, shadowJar
+}
