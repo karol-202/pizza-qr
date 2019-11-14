@@ -1,4 +1,4 @@
-package pl.grinchscode.pizzaqr.service
+package pl.grinchscode.pizzaqr.service.token
 
 import pl.grinchscode.pizzaqr.dao.TokenDao
 import pl.grinchscode.pizzaqr.model.Token

@@ -3,6 +3,9 @@ package pl.grinchscode.pizzaqr
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
+import io.ktor.auth.basic
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
@@ -22,11 +25,14 @@ import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 import pl.grinchscode.pizzaqr.dao.daoModule
 import pl.grinchscode.pizzaqr.model.Token
-import pl.grinchscode.pizzaqr.service.TokenService
+import pl.grinchscode.pizzaqr.service.auth.AuthService
 import pl.grinchscode.pizzaqr.service.serviceModule
+import pl.grinchscode.pizzaqr.service.token.TokenService
 import pl.grinchscode.pizzaqr.util.*
 
 const val ARG_MONGODB = "mongodb.uri"
+const val ARG_AUTH_USERNAME = "auth.username"
+const val ARG_AUTH_PASSWORD = "auth.password"
 
 @KtorExperimentalAPI
 fun Application.main()
@@ -50,8 +56,16 @@ private fun Application.configure()
 		method(HttpMethod.Put)
 		method(HttpMethod.Delete)
 	}
+	install(Authentication) {
+		val authService: AuthService by inject()
+
+		basic {
+			realm = "PizzaQR"
+			validate { authService.authenticate(it) }
+		}
+	}
 	install(Koin) {
-		propertiesByKtorEnvironment(environment, ARG_MONGODB)
+		propertiesByKtorEnvironment(environment, ARG_MONGODB, ARG_AUTH_USERNAME, ARG_AUTH_PASSWORD)
 		modules(listOf(daoModule(), serviceModule()))
 	}
 }
@@ -59,19 +73,21 @@ private fun Application.configure()
 private fun Application.routing() = routing {
 	val tokenService: TokenService by inject()
 
-	route("api/token") {
-		get("{token}") {
-			val token = call.parameters["token"] ?: return@get badRequest()
-			tokenService.useToken(token)?.let { ok(it) } ?: notFound()
+	authenticate {
+		route("api/token") {
+			get("{token}") {
+				val token = call.parameters["token"] ?: return@get badRequest()
+				tokenService.useToken(token)?.let { ok(it) } ?: notFound()
+			}
+			post {
+				val token = call.receive<Token>()
+				if(tokenService.addToken(token)) ok() else conflict()
+			}
 		}
-		post {
-			val token = call.receive<Token>()
-			if(tokenService.addToken(token)) ok() else conflict()
-		}
-	}
 
-	static {
-		resources("static")
-		defaultResource("index.html", "static")
+		static {
+			resources("static")
+			defaultResource("index.html", "static")
+		}
 	}
 }

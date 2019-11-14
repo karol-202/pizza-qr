@@ -14,6 +14,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "io.ktor:ktor-server-netty:1.2.4"
     implementation "io.ktor:ktor-gson:1.2.4"
+    implementation "io.ktor:ktor-auth:1.2.4"
     implementation "org.litote.kmongo:kmongo:3.11.1"
     implementation "org.litote.kmongo:kmongo-async:3.11.1"
     implementation "org.litote.kmongo:kmongo-coroutine:3.11.1"
