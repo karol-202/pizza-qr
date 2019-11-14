@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Grinch's code scanner",
+  "name": "Grinch's code scanner",
   "icons": [
     {
       "src": "favicon.ico",
