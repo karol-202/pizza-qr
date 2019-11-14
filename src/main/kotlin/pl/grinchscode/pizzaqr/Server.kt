@@ -11,7 +11,6 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.gson.gson
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
@@ -56,7 +55,6 @@ private fun Application.configure()
 		method(HttpMethod.Post)
 		method(HttpMethod.Put)
 		method(HttpMethod.Delete)
-		header(HttpHeaders.UserAgent)
 	}
 	install(Authentication) {
 		val authService: AuthService by inject()
