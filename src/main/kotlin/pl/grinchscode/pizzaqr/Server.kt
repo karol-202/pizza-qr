@@ -6,10 +6,7 @@ import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.basic
-import io.ktor.features.CORS
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
+import io.ktor.features.*
 import io.ktor.gson.gson
 import io.ktor.http.HttpMethod
 import io.ktor.http.content.defaultResource
@@ -68,6 +65,8 @@ private fun Application.configure()
 		propertiesByKtorEnvironment(environment, ARG_MONGODB, ARG_AUTH_USERNAME, ARG_AUTH_PASSWORD)
 		modules(listOf(daoModule(), serviceModule()))
 	}
+	install(XForwardedHeaderSupport)
+	install(HttpsRedirect)
 }
 
 private fun Application.routing() = routing {
